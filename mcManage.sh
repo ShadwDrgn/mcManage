@@ -1,8 +1,12 @@
 #!/bin/bash
 # Minecraft AutoBackup
 NOW=$(date +"%Y%m%d%H%M")
+#Minecraft Home Directory
 HOME='/home/user/mc/'
-DISPLAY=:`ls /tmp/.X11-unix/X* | cut -b17`
+#Backup Directory
+BACKUPDIR='/home/user/backups/mc/'
+#Tectonicus needs this. Gets first active X Display. I use dynmap now
+export DISPLAY=:`ls /tmp/.X11-unix/X* | cut -b17`
 
 do_bihourly() {
 if [ -e ${HOME}server.log.lck ] #check if server is running
@@ -11,7 +15,7 @@ then #Inform players that backup started
    screen -S minecraft -p smp -X stuff "save-off"`echo -ne '\015'`
    screen -S minecraft -p smp -X stuff "save-all"`echo -ne '\015'`
    sleep 5
-   tar -cjf /home/user/backups/mc/${NOW}.tgz --listed-incremental=/home/user/backups/mc/`date +%Y%m`.snp -C /home/user/mc/Durance .
+   tar -cjf ${BACKUPDIR}${NOW}.tgz --listed-incremental=${BACKUPDIR}`date +%Y%m`.snp -C ${HOME} .
    screen -S minecraft -p smp -X stuff "save-on"`echo -ne '\015'`
    screen -S minecraft -p smp -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
    return 0
@@ -39,7 +43,7 @@ then #Inform players that backup started
    screen -S minecraft -p smp -X stuff "save-off"`echo -ne '\015'`
    screen -S minecraft -p smp -X stuff "save-all"`echo -ne '\015'`
    sleep 5
-   tar -cjf /home/user/backups/mc/`date +%Y%m`-level0.tgz --listed-incremental=/home/user/backups/mc/`date +%Y%m`.snp --level=0 -C /home/user/mc/Durance .
+   tar -cjf ${BACKUPDIR}`date +%Y%m`-level0.tgz --listed-incremental=${BACKUPDIR}`date +%Y%m`.snp --level=0 -C ${HOME} .
    screen -S minecraft -p smp -X stuff "save-on"`echo -ne '\015'`
    screen -S minecraft -p smp -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
    return 0
