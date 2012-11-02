@@ -5,19 +5,24 @@ NOW=$(date +"%Y%m%d%H%M")
 HOME='/home/user/mc/'
 #Backup Directory
 BACKUPDIR='/home/user/backups/mc/'
+#Screen session name
+SCREENSESSION='minecraft'
+#Window name in screen
+SCREENWINDOW='smp'
+
 #Tectonicus needs this. Gets first active X Display. I use dynmap now
 export DISPLAY=:`ls /tmp/.X11-unix/X* | cut -b17`
 
 do_bihourly() {
 if [ -e ${HOME}server.log.lck ] #check if server is running
 then #Inform players that backup started
-   screen -S minecraft -p smp -X stuff "say ###Backup - Started###"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-off"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-all"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Started###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-off"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-all"`echo -ne '\015'`
    sleep 5
    tar -cjf ${BACKUPDIR}${NOW}.tgz --listed-incremental=${BACKUPDIR}`date +%Y%m`.snp -C ${HOME} .
-   screen -S minecraft -p smp -X stuff "save-on"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-on"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
    return 0
 else
    return 1
@@ -26,26 +31,26 @@ fi
 }
 
 do_map() {
-   screen -S minecraft -p smp -X stuff "say ###Map - Generating###"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-off"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-all"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Map - Generating###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-off"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-all"`echo -ne '\015'`
    rm -rf /var/www/map/*
    #/usr/bin/python2.7 ~/Minecraft-Overviewer/overviewer.py ~/mc/Durance /var/www/map
    java -Xmx4096M -jar /home/user/tectonicus/Tectonicus_v2.14.jar config=/home/user/tectonicus/config.xml
-   screen -S minecraft -p smp -X stuff "save-on"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "say ###Map - Complete###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-on"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Map - Complete###"`echo -ne '\015'`
 }
 
 do_monthly() {
 if [ -e ${HOME}server.log.lck ] #check if server is running
 then #Inform players that backup started
-   screen -S minecraft -p smp -X stuff "say ###Backup - Started###"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-off"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "save-all"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Started###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-off"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-all"`echo -ne '\015'`
    sleep 5
    tar -cjf ${BACKUPDIR}`date +%Y%m`-level0.tgz --listed-incremental=${BACKUPDIR}`date +%Y%m`.snp --level=0 -C ${HOME} .
-   screen -S minecraft -p smp -X stuff "save-on"`echo -ne '\015'`
-   screen -S minecraft -p smp -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "save-on"`echo -ne '\015'`
+   screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Complete###"`echo -ne '\015'`
    return 0
 else
    return 1
