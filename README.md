@@ -4,10 +4,4 @@ You'll need to run minecraft from a named screen session eg: screen -S minecraft
 
 Your server will need to be running in a named window. You name a window by pressing: ^a,a (ctrl-a followed by a capitol A)
 
-Your crontab should look like this:
-
-@monthly /path/to/mcManage.sh full
-
-@monthly /path/to/mcManage.sh clean
-
-00 */2 * * * /path/to/mcManage.sh incremental
+An example crontab is included. Comment out the line for clean to keep all backups.
