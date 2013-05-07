@@ -1,19 +1,27 @@
 #!/bin/bash
 # Minecraft AutoBackup
 NOW=$(date +"%Y%m%d%H%M")
+
 #Minecraft Home Directory
 HOME='/home/user/mc/'
+
 #Backup Directory
 BACKUPDIR='/home/user/backups/mc/'
+
 #Screen session name
 SCREENSESSION='minecraft'
+
 #Window name in screen
 SCREENWINDOW='smp'
 
-#Tectonicus needs this. Gets first active X Display. I use dynmap now
-export DISPLAY=:`ls /tmp/.X11-unix/X* | cut -b17`
+####
+# Uncomment the following line if you use Tectonicus.
+# This gets first active X Display. If you don't have X,
+# uncommenting this will cause problem.
+####
+#export DISPLAY=:`ls /tmp/.X11-unix/X* | cut -b17`
 
-do_bihourly() {
+do_incremental() {
 if [ -e ${HOME}server.log.lck ] #check if server is running
 then #Inform players that backup started
    screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Started###"`echo -ne '\015'`
@@ -41,7 +49,7 @@ do_map() {
    screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Map - Complete###"`echo -ne '\015'`
 }
 
-do_monthly() {
+do_full() {
 if [ -e ${HOME}server.log.lck ] #check if server is running
 then #Inform players that backup started
    screen -S ${SCREENSESSION} -p ${SCREENWINDOW} -X stuff "say ###Backup - Started###"`echo -ne '\015'`
@@ -58,25 +66,29 @@ fi
 return 1
 }
 
-#clean ()
-#{
+do_clean ()
+{
    #find /home/user/backups/mc -mmin +2880 -exec rm {} \; #remove backups older than 2days
-#}
+   /bin/rm ${BACKUPDIR}`date --date="3 months ago" +"%Y%m"`*
+}
 
 case $1 in
-	"monthly")
-	do_monthly
+	"full")
+	do_full
 	;;
-	"bihourly")
+	"incremental")
 	DOM=`date +"%d"`
 	HOUR=`date +"%H"`
 	if (( ("$DOM" == "01") && ("$HOUR" == "00") )); then
 		exit 0
 	else
-		do_bihourly
+		do_incremental
 	fi
 	;;
 	"map")
 	do_map
+	;;
+	"clean")
+	do_clean
 	;;
 esac
