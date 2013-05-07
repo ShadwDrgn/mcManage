@@ -1,0 +1,3 @@
+@monthly /path/to/mcManage.sh full
+@monthly /path/to/mcManage.sh clean
+00 */2 * * * /path/to/mcManage.sh incremental
