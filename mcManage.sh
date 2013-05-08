@@ -79,7 +79,7 @@ case $1 in
 	"incremental")
 	DOM=`date +"%d"`
 	HOUR=`date +"%H"`
-	if (( ("$DOM" == "01") && ("$HOUR" == "00") )); then
+	if [ $DOM -eq 01 ] && [ $HOUR -eq 00 ]; then
 		exit 0
 	else
 		do_incremental
